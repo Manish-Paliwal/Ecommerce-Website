@@ -1,0 +1,5 @@
+import Order from "../models/Order.js";
+import Product from "../models/Product.js";
+
+export async function createOrder(req, res, next) { try { const { customer, items } = req.body; if (!customer?.name || !customer?.email || !customer?.address || !items?.length) return res.status(400).json({ message: "Customer details and cart items are required" }); const ids = items.map((item) => item.product); const products = await Product.find({ _id: { $in: ids } }); const total = items.reduce((sum, item) => { const product = products.find((entry) => entry.id === item.product); return sum + (product?.price || item.price) * item.quantity; }, 0); const order = await Order.create({ customer, items, total: Number(total.toFixed(2)) }); res.status(201).json(order); } catch (error) { next(error); } }
+export async function listOrders(req, res, next) { try { res.json(await Order.find().populate("items.product").sort({ createdAt: -1 })); } catch (error) { next(error); } }

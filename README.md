@@ -1,61 +1,54 @@
-Ecommerce MERN — Local run instructions
+# Shopme
 
-Overview
-- Backend: Express + MongoDB (Mongoose)
-- Frontend: React (Parcel)
-- Basic features: product listing, product page, cart, checkout, auth (register/login), admin product create/delete, seed script with dummy data.
+A responsive React storefront with a MongoDB/Express API, shared cart state, product browsing, and checkout order creation.
 
-Prereqs
-- Node.js (>=16), npm
-- MongoDB running locally or accessible via connection string
+## Structure
 
-1) Get project files
-- Ensure directory structure:
-  ecommerce-mern/
-    backend/
-    frontend/
+```text
+frontend/
+	components/       Shared navigation and product card
+	context/          CartContext and useCart
+	data/             Local artwork used when the API is unavailable
+	pages/            Home, Shop, Cart, Checkout routes
+	services/         Fetch-based API client
+backend/src/
+	config/           MongoDB connection
+	controllers/      Product and order request handlers
+	middleware/       Express error handling
+	models/           User, Product, and Order schemas
+	routes/           Product and order endpoints
+	seed.js           Example catalog seed
+	server.js         Express entry point
+```
 
-2) Backend setup
-- cd ecommerce-mern/backend
-- Copy .env.example -> .env and fill values if needed (default works for local MongoDB)
-  - MONGO_URI (default: mongodb://127.0.0.1:27017/ecommerce_db)
-  - JWT_SECRET (set to any string)
-  - PORT (default 5000)
-- Install:
-  npm install
-- Seed DB with dummy data:
-  npm run seed
-  (Output will show admin credentials: admin@example.com / admin123)
-- Start backend:
-  npm run dev
-  or
-  npm start
+## Run locally
 
-3) Frontend setup
-- cd ../frontend
-- Copy .env.example -> .env if you want to override BACKEND_URL (default http://localhost:5000/api)
-- Install:
-  npm install
-- Start frontend (Parcel will open browser):
-  npm start
+1. Install frontend dependencies: `cd frontend` then `npm install`
+2. Install backend dependencies: `cd backend` then `npm install`
+3. Copy `backend/.env.example` to `backend/.env` and set `MONGO_URI`.
+4. Start MongoDB, seed the catalog with `npm run seed` from `backend`.
+5. Start the API with `npm run dev` from `backend`.
+6. In a second terminal, run `npm run dev` from `frontend`.
 
-4) Usage
-- Open http://localhost:1234 (Parcel default) or the browser window Parcel opens.
-- Login as admin (if you used seed): admin@example.com / admin123 — you can visit /admin to create/delete products.
-- Register new users and place orders.
+The frontend defaults to `http://localhost:5000/api`. Set `VITE_API_URL` when the API is deployed elsewhere.
 
-5) Build and production
-- Build frontend:
-  npm run build
-  - deploy build/ contents to static host and set BACKEND_URL to your deployed backend.
+If using local MongoDB, make sure the MongoDB service is running before `npm run seed`. If using MongoDB Atlas, replace `MONGO_URI` in `backend/.env` with the Atlas connection string.
 
-6) Create zip (Linux/macOS)
-- From parent directory:
-  zip -r ecommerce-mern.zip ecommerce-mern
-- Windows (PowerShell):
-  Compress-Archive -Path .\ecommerce-mern\ -DestinationPath .\ecommerce-mern.zip
+## API
 
-Notes & troubleshooting
-- If MongoDB not running locally, provide a hosted Mongo URI in backend/.env MONGO_URI.
-- If CORS issues occur, backend already uses cors(); ensure BACKEND_URL set correctly.
-- Adjust images: seed.js uses placeholder image URLs, so no local images are required.
+- `GET /api/health`
+- `GET /api/products?category=Women`
+- `GET /api/products/:id`
+- `POST /api/products`
+- `GET /api/orders`
+- `POST /api/orders`
+
+Orders recalculate their total from database product prices before saving. Authentication and payment processing should be added before accepting real payments; the User schema is ready for that next layer.
+
+## Checks
+
+```bash
+cd frontend
+npm run build
+npm run lint
+```

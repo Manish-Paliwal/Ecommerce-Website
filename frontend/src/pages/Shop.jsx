@@ -1,0 +1,13 @@
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import ProductCard from "../components/ProductCard";
+import { getProducts } from "../services/api";
+import { localProducts, mergeProducts } from "../data/products";
+
+export default function Shop() {
+  const [products, setProducts] = useState([]); const [filter, setFilter] = useState("All"); const [maxPrice, setMaxPrice] = useState(8000); const [sort, setSort] = useState("featured"); const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => { getProducts().then((apiProducts) => setProducts(mergeProducts(apiProducts))).catch(() => setProducts(localProducts)); }, []);
+  const query = searchParams.get("search") || "";
+  const visible = products.filter((product) => (filter === "All" || product.category === filter) && product.price <= maxPrice && `${product.title} ${product.category} ${product.color}`.toLowerCase().includes(query.toLowerCase())).sort((a, b) => sort === "price-low" ? a.price - b.price : sort === "price-high" ? b.price - a.price : b.rating - a.rating);
+  return <main className="container py-16 shop-page"><div className="section-heading"><div><p className="eyebrow">THE SHOP</p><h1>Find your everyday</h1>{query && <p className="search-result">Showing results for “{query}” <button onClick={() => setSearchParams({})}>Clear</button></p>}</div></div><div className="shop-controls"><div className="filter-row">{["All", "Women", "Men", "Kids", "Accessories"].map((name) => <button key={name} className={filter === name ? "filter active" : "filter"} onClick={() => setFilter(name)}>{name}</button>)}</div><label className="price-control">Up to ₹{maxPrice.toLocaleString("en-IN")}<input type="range" min="2500" max="8000" step="100" value={maxPrice} onChange={(event) => setMaxPrice(Number(event.target.value))} /></label><select className="sort-control" value={sort} onChange={(event) => setSort(event.target.value)} aria-label="Sort products"><option value="featured">Featured</option><option value="price-low">Price: low to high</option><option value="price-high">Price: high to low</option></select></div>{visible.length ? <div className="product-grid">{visible.map((product) => <ProductCard key={product._id || product.id} product={product} />)}</div> : <div className="empty-state">No pieces matched those filters. <button className="underlined-link" onClick={() => { setSearchParams({}); setFilter("All"); setMaxPrice(8000); }}>Reset filters</button></div>}</main>;
+}

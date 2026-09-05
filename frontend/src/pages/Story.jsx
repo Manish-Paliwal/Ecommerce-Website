@@ -1,0 +1,5 @@
+import { Link } from "react-router-dom";
+
+export default function Story() {
+  return <main className="story-page"><section className="story-hero"><div className="container"><p className="eyebrow">THE ECOMMERCE JOURNAL</p><h1>Made for the<br /><em>long way around.</em></h1><p>We started Ecommerce with a simple belief: getting dressed should feel like a small act of self-respect, not a race to keep up.</p></div></section><section className="container story-details"><div><p className="eyebrow">OUR APPROACH</p><h2>Good design is<br />quietly useful.</h2></div><div className="story-copy"><p>Every piece is chosen for its texture, movement, and ability to earn a place in your real life. We look for considered details, honest materials, and shapes that stay relevant beyond one season.</p><p>We work with a small circle of makers and choose fewer pieces so you can build a wardrobe that feels like your own. Less noise. More room for the moments that matter.</p><Link to="/shop" className="button button-coral">Explore the collection ↗</Link></div></section></main>;
+}

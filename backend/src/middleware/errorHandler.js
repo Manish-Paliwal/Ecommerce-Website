@@ -1,0 +1,1 @@
+export function errorHandler(error, req, res, next) { console.error(error); void next; res.status(error.name === "ValidationError" ? 400 : 500).json({ message: error.message || "Server error" }); }

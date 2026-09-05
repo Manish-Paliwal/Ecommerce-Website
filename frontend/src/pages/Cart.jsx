@@ -1,0 +1,8 @@
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { formatINR, localProducts } from "../data/products";
+
+export default function Cart() {
+  const { items, total, updateQuantity, removeItem } = useCart(); const navigate = useNavigate();
+  return <main className="container py-16"><p className="eyebrow">YOUR BAG</p><h1 className="page-title">Ready when you are.</h1>{items.length === 0 ? <div className="empty-state">Your bag is waiting for something good. <Link to="/shop" className="underlined-link">Browse the shop</Link></div> : <div className="cart-layout"><div>{items.map((item) => <div className="cart-item" key={item.product}><img src={localProducts.find((product) => product.title === item.title)?.image || item.image} alt={item.title} /><div className="flex-1"><h3 className="font-semibold">{item.title}</h3><p className="text-sm text-muted">₹{formatINR(item.price)}</p><div className="quantity"><button onClick={() => updateQuantity(item.product, item.quantity - 1)}>-</button><span>{item.quantity}</span><button onClick={() => updateQuantity(item.product, item.quantity + 1)}>+</button></div></div><button className="remove-link" onClick={() => removeItem(item.product)}>Remove</button></div>)}</div><aside className="summary"><p className="eyebrow">SUMMARY</p><div className="summary-row"><span>Subtotal</span><strong>₹{formatINR(total)}</strong></div><p className="text-sm text-muted">Shipping and taxes calculated at checkout.</p><button className="button button-dark w-full" onClick={() => navigate("/checkout")}>Continue to checkout</button></aside></div>}</main>;
+}
