@@ -1,4 +1,4 @@
-# Shopme
+# Ecommerce-Website
 
 A responsive React storefront with a MongoDB/Express API, shared cart state, product browsing, and checkout order creation.
 
